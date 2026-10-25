@@ -1,4 +1,4 @@
-package flixel.system.hscript._internal;
+package flixel.hscript._internal;
 
 enum Const {
     CInt(v:Int);
@@ -100,13 +100,13 @@ enum ErrorDef {
 }
 
 enum ModuleDecl {
-    DPackage(path:Array<String>);
-    DImport(path:Array<String>, ?everything:Bool, ?name:String);
-    DUsing(path:Array<String>);
-    DClass(c:ClassDecl);
-    DTypedef(c:TypeDecl);
-    DEnum(e:EnumDecl);
-    DInterface(e:InterfaceDecl);
+    DPackage(packageDecl:Array<String>);
+    DImport(importDecl:ImportDecl);
+    DUsing(usingDecl:Array<String>);
+    DClass(classDecl:ClassDecl);
+    DTypedef(typeDecl:TypeDecl);
+    DEnum(enumDecl:EnumDecl);
+    DInterface(interfaceDecl:InterfaceDecl);
 }
 
 typedef ModuleType = {
@@ -114,6 +114,12 @@ typedef ModuleType = {
     var params:{}; // TODO : not yet parsed
     var meta:Metadata;
     var isPrivate:Bool;
+}
+
+typedef ImportDecl = {
+    var path:Array<String>;
+    var alias:String;
+    var wildcard:Bool;
 }
 
 typedef ClassDecl = {

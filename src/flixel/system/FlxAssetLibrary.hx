@@ -3,17 +3,17 @@ package flixel.system;
 import flixel.FlxG;
 import flixel.system.FlxModding;
 import flixel.util.helpers.FlxStringHelper;
-import openfl.text.Font as OpenFlFont;
-import lime.text.Font;
-import lime.utils.Bytes;
-import lime.utils.Assets;
-import lime.utils.AssetBundle;
-import lime.utils.AssetManifest;
-import lime.utils.AssetLibrary;
-import lime.media.AudioBuffer;
-import lime.graphics.Image;
-import lime.app.Future;
 import haxe.io.Path;
+import lime.app.Future;
+import lime.graphics.Image;
+import lime.media.AudioBuffer;
+import lime.text.Font;
+import lime.utils.AssetBundle;
+import lime.utils.AssetLibrary;
+import lime.utils.AssetManifest;
+import lime.utils.Assets;
+import lime.utils.Bytes;
+import openfl.text.Font as OpenFlFont;
 
 // TODO: Add comments to functions without any.
 
@@ -186,12 +186,10 @@ class FlxAssetLibrary extends AssetLibrary
             return FlxStringHelper.mergeJsonText(defaultText, moddedText);
         else if (FlxStringHelper.SRT_FILE_EXTS.contains(extension))
             return FlxStringHelper.mergeSrtText(defaultText, moddedText);
-        else if (FlxStringHelper.TEXT_FILE_EXTS.contains(extension))
-            return FlxStringHelper.mergePlainText(defaultText, moddedText);
         else
         {
             FlxG.log.warn("File extension not recognized, merging assets as plain text");
-            return FlxStringHelper.mergePlainText(defaultText, moddedText);
+            return moddedText;
         }
     }
 

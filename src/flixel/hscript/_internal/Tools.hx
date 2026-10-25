@@ -1,6 +1,6 @@
-package flixel.system.hscript._internal;
+package flixel.hscript._internal;
 
-import flixel.system.hscript._internal.Expr;
+import flixel.hscript._internal.Expr;
 
 class Tools {
     public static function iter(e:Expr, f:Expr->Void) {

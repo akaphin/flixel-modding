@@ -1,6 +1,6 @@
-package flixel.system.hscript._internal;
+package flixel.hscript._internal;
 
-import flixel.system.hscript._internal.Expr;
+import flixel.hscript._internal.Expr;
 
 enum Token {
     TEof;
@@ -23,8 +23,7 @@ enum Token {
     TPrepro(s:String);
 }
 
-// NOTE: Refers to string interpolation
-private enum InterpState {
+private enum StringInterpState {
     Literal;
     Interp;
     Ident;
@@ -32,7 +31,7 @@ private enum InterpState {
 }
 
 class Parser {
-    public static final KEYWORDS:Array<String> = ['for','if','else','switch','case','var','final','while','do','function','return','break','continue','inline','new','throw','try','catch','default','cast','in','true','false','null','this','super'];
+    public static final KEYWORDS:Array<String> = ['for','if','else','switch','case','var','final','while','do','function','return','break','continue','inline','new','throw','try','catch','default','cast','in'];
 
     // config / variables
     public var line:Int;
@@ -1312,7 +1311,7 @@ class Parser {
                 return DPackage(path);
             case "import":
                 var path = [getIdent()];
-                var star = false;
+                var wildcard = false;
                 while (true) {
                     var t = token();
                     if (t != TDot) {
@@ -1324,23 +1323,27 @@ class Parser {
                         case TId(id):
                             path.push(id);
                         case TOp("*"):
-                            star = true;
+                            wildcard = true;
                         default:
                             unexpected(t);
                     }
                 }
-                var name = null;
-                if (maybe(TId("as")) && !star) {
+                var alias = null;
+                if (maybe(TId("as")) && !wildcard) {
                     var t = token();
                     switch (t) {
                         case TId(id):
-                            name = id;
+                            alias = id;
                         default:
                             unexpected(t);
                     }
                 }
                 ensure(TSemicolon);
-                return DImport(path, star, name);
+                return DImport({
+                    path: path,
+                    alias: alias,
+                    wildcard: wildcard,
+                });
             case "using":
                 var path = [getIdent()];
                 while (true) {
@@ -1785,7 +1788,7 @@ class Parser {
     function interpolate(str:String):Expr {
         var b:StringBuf = new StringBuf();
         var parts:Array<Expr> = [];
-        var state:InterpState = Literal;
+        var state:StringInterpState = Literal;
         var p1:Int = tokenMin;
 
         inline function pushBuf(i:Int) {

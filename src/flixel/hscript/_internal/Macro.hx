@@ -1,7 +1,7 @@
-package flixel.system.hscript._internal;
+package flixel.hscript._internal;
 
-import flixel.system.hscript._internal.Expr.Error;
-import flixel.system.hscript._internal.Expr.ErrorDef;
+import flixel.hscript._internal.Expr.Error;
+import flixel.hscript._internal.Expr.ErrorDef;
 import haxe.macro.Expr;
 
 class Macro {
@@ -148,7 +148,7 @@ class Macro {
         };
     }
 
-    public function convertExpr(e:flixel.system.hscript._internal.Expr):Expr {
+    public function convertExpr(e:flixel.hscript._internal.Expr):Expr {
         return {
             expr: switch (e.e) {
                 case EConst(c):

@@ -4,6 +4,9 @@
     "[haxe]": 
     {
         "editor.tabSize": 4,
+        "editor.codeActionsOnSave": {
+			"source.sortImports": "explicit",
+		}
     },
 
     "[haxe-script]": 

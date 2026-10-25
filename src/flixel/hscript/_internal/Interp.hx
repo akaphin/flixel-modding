@@ -1,9 +1,9 @@
-package flixel.system.hscript._internal;
+package flixel.hscript._internal;
 
-import haxe.PosInfos;
+import flixel.hscript._internal.*;
+import flixel.hscript._internal.Expr;
 import haxe.Constraints.IMap;
-import flixel.system.hscript._internal.*;
-import flixel.system.hscript._internal.Expr;
+import haxe.PosInfos;
 
 private enum Stop {
     SBreak;
@@ -17,7 +17,7 @@ class Interp {
     var locals:Map<String, {r:Dynamic, ?isfinal:Bool}>;
     var binops:Map<String, Expr->Expr->Dynamic>;
     
-    var varInfos:Map<String, FieldDecl>;
+    var fields:Map<String, FieldDecl>;
 
     var depth:Int;
     var inTry:Bool;
@@ -40,13 +40,13 @@ class Interp {
         for (name in variables.keys())
         {
             if (!interp.hasVar(name))
-                interp.setVar(name, variables.get(name), (varInfos.exists(name)) ? varInfo(name) : null);
+                interp.setVar(name, variables.get(name), (fields.exists(name)) ? getField(name) : null);
         }
         return interp;
     }
 
     private function resetVariables() {
-        varInfos = new Map();
+        fields = new Map();
         variables = new Map();
         variables.set("null", null);
         variables.set("true", true);
@@ -121,9 +121,9 @@ class Interp {
         assignOp("??" + "=", function(v1, v2) return v1 ?? v2);
     }
 
-    public function varInfo(name):Null<FieldDecl> {
-        if (varInfos.exists(name))
-            return varInfos.get(name);
+    function getField(name):Null<FieldDecl> {
+        if (fields.exists(name))
+            return fields.get(name);
 
         return null;
     }
@@ -131,12 +131,12 @@ class Interp {
     public function setVar(name:String, value:Dynamic, ?vInfo:FieldDecl):Dynamic {
         if (vInfo != null) {
             variables.set(name, value);
-            varInfos.set(name, vInfo);
+            fields.set(name, vInfo);
             return value;
         }
 
-        if (varInfos.exists(name)) {
-            vInfo = varInfo(name);
+        if (fields.exists(name)) {
+            vInfo = getField(name);
             if (vInfo.access.contains(AFinal) || vInfo.access.contains(AInline))
                 return error(EInvalidAccess(name));
     
@@ -176,8 +176,8 @@ class Interp {
         if (!hasVar(id)) 
             return error(EUnknownVariable(id));
 
-        if (varInfos.exists(id)) {
-            var vInfo = varInfo(id);
+        if (fields.exists(id)) {
+            var vInfo = getField(id);
             switch (vInfo.kind) {
                 case KProp(v):
                     if (v.get != null) {

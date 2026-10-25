@@ -2,14 +2,13 @@ package flixel.system;
 
 import flixel.FlxG;
 import flixel.group.FlxModpackContainer;
+import flixel.hscript.FlxScript;
 import flixel.system.FlxBaseModpack;
 import flixel.system.FlxFileSystem;
 import flixel.system.FlxLegacyModpack;
 import flixel.system.FlxModpack;
-import flixel.system.hscript.FlxScriptModule;
 import flixel.system.macros.FlxModMacro;
 import flixel.system.polymod.PolymodModpack;
-import flixel.util.FlxScriptUtil;
 import flixel.util.FlxSignal;
 import flixel.util.FlxSort;
 import flixel.util.FlxZipUtil;
@@ -139,6 +138,10 @@ class FlxModding
      * Flixel-specific assets directory.
      */
     private static var FLIXEL_DIRECTORY:String = "flixel";
+
+    private static var cachedScripts:Map<String, FlxScript> = [];
+
+    // private static var cachedModules:Map<String, FlxModule> = [];
 
     /**
      * Initializes the Flixel-Modding system for runtime mod support.
@@ -646,11 +649,6 @@ class FlxModding
                     if (FlxFileSystem.exists(mergeDirectory + "/" + id)) 
                         return mergeDirectory + "/" + id;
 
-                    var sourceDirectory:String = modpackDirectory + "/" + FlxScriptUtil.DEFAULT_SOURCE_PREFIX;
-
-                    if (FlxFileSystem.exists(sourceDirectory + "/" + id)) 
-                        return sourceDirectory + "/" + id;
-
                     return modpackDirectory + "/" + id;
                 }
             }
@@ -941,8 +939,11 @@ class FlxModding
         lime.utils.Assets.cache = FlxAssetCache.limeCache;
 
         #if (FLX_BUILD_SCRIPTS || !FLX_NO_BUILD_SCRIPTS)
-        FlxScriptUtil.buildAllScripts();
-        FlxScriptUtil.buildAllScriptModules();
+        for (assetPath in openfl.utils.Assets.list(TEXT))
+        {
+            if (Path.extension(assetPath) == FlxScript.SCRIPT_FILE_EXT)
+                FlxScript.cachedScripts.set(assetPath, new FlxScript(assetPath));
+        }
         #end
 
         #if (flixel >= "5.9.0" && FLX_CUSTOM_ASSETS_DIRECTORY)

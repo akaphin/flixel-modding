@@ -367,20 +367,6 @@ class FlxStringHelper
 	}
 
 	/**
-	 * Merges plain text to the provided base string.
-	 * 
-	 * @param base             The original string
-	 * @param text             The text to merge
-	 *
-	 * @return Returns a merged plain text string result.
-	 */
-	public static function mergePlainText(base:String, text:String):String 
-	{
-		FlxG.log.warn("Failed to merge Plain Text, this feature is not yet officially supported");
-		return base;
-	}
-
-	/**
 	 * Merges JSON text into a base JSON string.
 	 * 
 	 * @param base             The original JSON string
