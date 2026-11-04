@@ -50,7 +50,7 @@ class FlxModding
     /**
 	 * The version of the library
 	 */
-	public static final VERSION:Version = "1.6.0";
+	public static final VERSION:Version = "2.0.0";
 
     /**
 	 * The title of the library
